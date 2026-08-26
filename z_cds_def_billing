@@ -1,0 +1,152 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'CDS entity for billing document header & item details'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+
+define view entity z_cds_def_billing   as select from    vbrk
+    left outer join vbrp on vbrk.vbeln = vbrp.vbeln
+  // association [1..*] to vbrp on $projection.billing_document = vbrp.vbeln
+  association [1..1] to marc                     on  vbrk.vbeln = marc.matnr
+                                                 and vbrp.werks = marc.werks
+  association [1..1] to makt                     on  vbrp.matnr = makt.matnr
+  association [1..1] to j_1bbranch               on  vbrk.bukrs = j_1bbranch.bukrs
+                                                 and vbrk.bupla = j_1bbranch.branch
+  association [1..1] to edoineinv                on  vbrk.bupla = edoineinv.bupla
+                                                 and vbrk.xblnr = edoineinv.inv_num
+  association [1..1] to z_cds_def_customer as re on  vbrk.vbeln = re.vbeln
+                                                 and re.parvw   = 'RE'
+  association [1..1] to z_cds_def_customer as we on  vbrk.vbeln = we.vbeln
+                                                 and we.parvw   = 'WE'
+  association [1..1] to z_cds_def_customer as ag on  vbrk.vbeln = ag.vbeln
+                                                 and ag.parvw   = 'AG'
+  association        to vbak                     on  vbrp.aubel = vbak.vbeln
+  association        to vbap                     on  vbrp.aubel = vbap.vbeln
+                                                 and vbrp.aupos = vbap.posnr
+  association        to vbkd                     on  vbrp.aubel = vbkd.vbeln
+  association        to tvgrt                    on  vbrp.vkgrp = tvgrt.vkgrp
+  association        to z_cds_def_tax      as tax     on  vbrk.knumv = tax.knumv
+                                                 and vbrp.posnr      = tax.kposn
+  association        to prcd_elements      as amount  on  vbrk.knumv = amount.knumv
+                                                 and vbrp.posnr      = amount.kposn
+{
+  key vbrk.vbeln                                                                                 as billing_document,
+  key vbrp.posnr                                                                                 as billing_item,
+      vbrk.bukrs                                                                                 as company_code,
+      vbrk.vkorg                                                                                 as sales_organistion,
+      vbrk.fkart                                                                                 as billing_type,
+      vbrk.fkdat                                                                                 as billing_date,
+      vbrk.knumv,
+      vbrk.kurrf,
+      vbrk.waerk,
+      vbrk.xblnr,
+      vbrk.kunag,
+      vbrk.spart,
+      vbrk.bupla                                                                                 as business_place,
+      vbrk.zterm,
+      vbrp.matnr                                                                                 as material_no,
+      vbrp.werks                                                                                 as plant,
+      vbrp.vgbel                                                                                 as delivery_no,
+      vbrp.aubel                                                                                 as order_no,
+      vbrp.aupos                                                                                 as order_item,
+      concat_with_space(vbrk.inco1, vbrk.inco2, 1)                                               as incoterms,
+      @Semantics.quantity.unitOfMeasure: 'meins'
+      vbrp.fkimg                                                                                 as quantity,
+      vbrp.arktx,
+      @Semantics.amount.currencyCode: 'waerk'
+      vbrp.netwr,
+      vbrp.meins,
+      vbrp.vkbur,
+      vbrp.vrkme,
+      @Semantics.quantity.unitOfMeasure: 'vrkme'
+      vbrp.fklmg,
+      marc.steuc                                                                                 as hsn,
+      makt.maktx                                                                                 as material_description,
+      j_1bbranch.gstin                                                                           as business_gstin,
+      edoineinv.inv_reg_num                                                                      as irn,
+      edoineinv.ewbno                                                                            as ewaybill_no,
+      re.kunnr                                                                                   as bill_to_cust,
+      re.stcd3                                                                                   as bill_to_gstin,
+      re.name1                                                                                   as bill_to_name1,
+      re.name2                                                                                   as bill_to_name2,
+      re.str_suppl3                                                                              as bill_to_suppl3,
+      re.region                                                                                  as bill_to_region,
+      re.street                                                                                  as bill_to_street,
+      re.city1                                                                                   as bill_to_city1,
+      re.country                                                                                 as bill_to_country,
+      re.post_code1                                                                              as bill_to_post_code,
+      re.j_1ipanno                                                                               as bill_to_pan,
+      we.kunnr                                                                                   as ship_to_cust,
+      we.stcd3                                                                                   as ship_to_gstin,
+      we.name1                                                                                   as ship_to_name1,
+      we.name2                                                                                   as ship_to_name2,
+      we.str_suppl3                                                                              as ship_to_suppl3,
+      we.region                                                                                  as ship_to_region,
+      we.street                                                                                  as ship_to_street,
+      we.city1                                                                                   as ship_to_city1,
+      we.post_code1                                                                              as ship_to_post_code,
+      ag.kunnr                                                                                   as sold_to_cust,
+      ag.stcd3                                                                                   as sold_to_gstin,
+      ag.name1                                                                                   as sold_to_name1,
+      ag.name2                                                                                   as sold_to_name2,
+      ag.str_suppl3                                                                              as sold_to_suppl3,
+      ag.region                                                                                  as sold_to_region,
+      ag.street                                                                                  as sold_to_street,
+      ag.city1                                                                                   as sold_to_city1,
+      ag.post_code1                                                                              as sold_to_post_code,
+      ag.ort01                                                                                   as sold_to_location,
+      vbak.audat,
+      vbak.auart,
+      vbak.bstnk,
+      vbak.bstdk,
+      vbap.kdmat,
+      vbkd.bzirk,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(amount.kwert as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))            as local_currency_amount,
+      @Semantics.amount.currencyCode: 'waerk'
+      amount.kwert                                                                               as document_currency_amount,
+      @Semantics.amount.currencyCode: 'waerk'
+      //cast( cast(tax.surcharge_discount as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))  as surcharge_discount,
+      cast('0' as abap.dec( 15, 2 ))                                                            as surcharge_discount,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.freight as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))             as freight_amount,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.packing as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))             as packing_amount,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.mat_surcharge as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))       as mat_surcharge,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.min_sales_order_sur as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 )) as min_sales_order_sur,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.project_disc as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))        as project_disc,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.igst_amount as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))         as igst_amount,
+      tax.igst_rate,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.cgst_amount as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))         as cgst_amount,
+      tax.cgst_rate,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.sgst_amount as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))         as sgst_amount,
+      tax.sgst_rate,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.tcs_base as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))            as tcs_base,
+      tax.tcs_rate,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.tcs as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))                 as tcs,
+      @Semantics.amount.currencyCode: 'waerk'
+      cast( cast(tax.tcs_scrap as abap.dec( 15, 2 )) / vbrk.kurrf as abap.dec( 9, 5 ))           as tcs_scrap,
+      tvgrt.bezei
+}
+where
+      vbrk.rfbsk   = 'C'
+  and vbrk.sfakn   = ' '
+  and vbrk.fksto   = ' '
+  and amount.kvsl1 = 'ERL'
+  and amount.kstat = ' '
+  and amount.kinak = ' '
+  and amount.koaid = 'B'
+  and makt.spras   = $session.system_language;
+
