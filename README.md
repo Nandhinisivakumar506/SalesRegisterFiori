@@ -35,9 +35,15 @@ An SAP Fiori application.
 ```
 
 To Update Use below code in BAS
+```
 git add .
+```
+```
 git commit -m "Updated Fiori application"
+```
+```
 git push
+```
 
 #### Pre-requisites:
 
