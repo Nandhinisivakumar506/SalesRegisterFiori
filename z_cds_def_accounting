@@ -1,0 +1,44 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'CDS entity for Accounting document'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity z_cds_def_accounting
+  as select from bkpf
+    inner join   bseg on  bkpf.bukrs =  bseg.bukrs
+                      and bkpf.belnr =  bseg.belnr
+                      and bkpf.gjahr =  bseg.gjahr
+                      and bseg.buzid <> 'T'
+/*+[hideWarning] { "IDS" : [ "CARDINALITY_CHECK" ] } */
+  association to bseg as bseg_d on  bkpf.bukrs   = bseg_d.bukrs
+                                and bkpf.belnr   = bseg_d.belnr
+                                and bkpf.gjahr   = bseg_d.gjahr
+                                and bseg_d.koart = 'D'
+/*+[hideWarning] { "IDS" : [ "CARDINALITY_CHECK" ] } */                                
+  association to skat           on  skat.ktopl = 'INT'
+                                and bseg.hkont = skat.saknr
+                               
+{
+  key bkpf.bukrs,
+  key bkpf.belnr,
+  key bkpf.gjahr,
+      bkpf.awkey,
+      bkpf.hwaer,
+      bkpf.waers,
+      bseg.koart,
+      bseg.matnr,
+      bseg_d.plc_sup,
+      bseg.hsn_sac,
+      bseg.hkont,
+      skat.txt50
+      }
+where
+    ( bseg.koart <> 'D'
+  //or bseg.buzid <> 'T'
+  or bseg.qsskz =  ' ' ) and skat.spras = $session.system_language
+  ;
+
