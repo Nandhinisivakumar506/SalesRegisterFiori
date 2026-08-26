@@ -1,0 +1,340 @@
+@Metadata.layer: #CORE
+
+@UI: {
+  headerInfo: {
+    typeName: 'Sales Register',
+    typeNamePlural: 'Sales Registers',
+    title: {
+      type: #STANDARD,
+      value: 'billing_document'
+    }
+  }
+} 
+
+annotate view z_cds_def_sales_register with
+{
+  @UI.lineItem: [{ position: 1 }]
+  @UI.identification: [{ position: 1 }]
+  @UI.selectionField: [ { position: 1 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: 'Z_CDS_F4_BILLINGNO', element: 'billing_document' } }]  
+  @Consumption.filter.selectionType: #INTERVAL
+  @Consumption.filter.multipleSelections: true
+  billing_document;
+
+  @UI.lineItem: [{ position: 2, label: 'Billing Item' }]
+  @UI.identification: [{ position: 2 }]
+  billing_item;
+
+  @UI.lineItem: [{ position: 3, label: 'Supplier GSTIN' }]
+  @UI.identification: [{ position: 3 }]
+  business_gstin;
+
+  @UI.lineItem: [{ position: 4 }]
+  @UI.identification: [{ position: 4 }]
+  plant;
+
+  @UI.lineItem: [{ position: 5 }]
+  @UI.identification: [{ position: 5 }]
+  @UI.selectionField: [ { position: 2 } ]
+  @Consumption.filter.multipleSelections: true
+  business_place;
+
+  @UI.lineItem: [{ position: 6 }]
+  @UI.identification: [{ position: 6 }]
+  @UI.selectionField: [ { position: 3 } ]
+  sales_office;
+
+  @UI.lineItem: [{ position: 7 }]
+  @UI.identification: [{ position: 7 }]
+  sales_district;
+
+  @UI.lineItem: [{ position: 8, label: 'Invoice Number' }]
+  @UI.identification: [{ position: 8 }]
+  invoice_number;
+
+  @UI.lineItem: [{ position: 9 }]
+  @UI.identification: [{ position: 9 }]
+  billing_type;
+
+  @UI.lineItem: [{ position: 10 }]
+  @UI.identification: [{ position: 10 }]
+  @UI.selectionField: [ { position: 4 } ]
+  @Consumption.filter.mandatory: true
+  @Consumption.filter.selectionType: #INTERVAL
+  @Consumption.filter.multipleSelections: true
+  billing_date;
+
+  @UI.lineItem: [{ position: 11 }]
+  @UI.identification: [{ position: 11 }]
+  order_no;
+
+  @UI.lineItem: [{ position: 12 }]
+  @UI.identification: [{ position: 12 }]
+  order_item;
+
+  @UI.lineItem: [{ position: 13 }]
+  @UI.identification: [{ position: 13 }]
+  order_type;
+
+  @UI.lineItem: [{ position: 14 }]
+  @UI.identification: [{ position: 14 }]
+  document_date;
+
+  @UI.lineItem: [{ position: 15, label: 'Delivery Doc No.' }]
+  @UI.identification: [{ position: 15 }]
+  delivery_no;
+
+  @UI.lineItem: [{ position: 16, label: 'Purchase Order No.' }]
+  @UI.identification: [{ position: 16 }]
+  po_num;
+
+  @UI.lineItem: [{ position: 17, label: 'Purchase Order Date' }]
+  @UI.identification: [{ position: 17 }]
+  po_date;
+
+  @UI.lineItem: [{ position: 18, label: 'Bill To Party' }]
+  @UI.identification: [{ position: 18 }]
+  bill_to_cust;
+
+  @UI.lineItem: [{ position: 19, label: 'Bill To GSTIN' }]
+  @UI.identification: [{ position: 19 }]
+  bill_to_gstin;
+
+  @UI.lineItem: [{ position: 20, label: 'Bill To PAN' }]
+  @UI.identification: [{ position: 20 }]
+  bill_to_pan;
+
+  @UI.lineItem: [{ position: 21, label: 'Bill To Name1' }]
+  @UI.identification: [{ position: 21 }]
+  bill_to_name1;
+
+  @UI.lineItem: [{ position: 22, label: 'Bill To Name2' }]
+  @UI.identification: [{ position: 22 }]
+  bill_to_name2;
+
+  @UI.lineItem: [{ position: 23, label: 'Bill To Address1' }]
+  @UI.identification: [{ position: 23 }]
+  bill_to_street;
+
+  @UI.lineItem: [{ position: 24, label: 'Bill To Address2' }]
+  @UI.identification: [{ position: 24 }]
+  bill_to_suppl3;
+
+  @UI.lineItem: [{ position: 25, label: 'Bill To Country' }]
+  @UI.identification: [{ position: 25 }]
+  bill_to_country;
+
+  @UI.lineItem: [{ position: 26, label: 'Bill To City' }]
+  @UI.identification: [{ position: 26 }]
+  bill_to_city1;
+
+  @UI.lineItem: [{ position: 27, label: 'Bill To State' }]
+  @UI.identification: [{ position: 27 }]
+  bill_to_region;
+
+  @UI.lineItem: [{ position: 28, label: 'Bill To Pincode' }]
+  @UI.identification: [{ position: 28 }]
+  bill_to_post_code;
+
+  @UI.lineItem: [{ position: 29, label: 'Ship To Party' }]
+  @UI.identification: [{ position: 29 }]
+  ship_to_cust;
+
+  @UI.lineItem: [{ position: 30, label: 'Ship To GSTIN' }]
+  @UI.identification: [{ position: 30 }]
+  ship_to_gstin;
+
+  @UI.lineItem: [{ position: 31, label: 'Ship To Name1' }]
+  @UI.identification: [{ position: 31 }]
+  ship_to_name1;
+
+  @UI.lineItem: [{ position: 32, label: 'Ship To Name2' }]
+  @UI.identification: [{ position: 32 }]
+  ship_to_name2;
+
+  @UI.lineItem: [{ position: 33, label: 'Ship To Address1' }]
+  @UI.identification: [{ position: 33 }]
+  ship_to_street;
+
+  @UI.lineItem: [{ position: 34, label: 'Ship To Address2' }]
+  @UI.identification: [{ position: 34 }]
+  ship_to_suppl3;
+
+  @UI.lineItem: [{ position: 35, label: 'Ship To City' }]
+  @UI.identification: [{ position: 35 }]
+  ship_to_city1;
+
+  @UI.lineItem: [{ position: 36, label: 'Ship To State' }]
+  @UI.identification: [{ position: 36 }]
+  ship_to_region;
+
+  @UI.lineItem: [{ position: 37, label: 'Ship To Pincode' }]
+  @UI.identification: [{ position: 37 }]
+  ship_to_post_code;
+
+  @UI.lineItem: [{ position: 38, label: 'Sold To Party' }]
+  @UI.identification: [{ position: 38 }]
+  sold_to_cust;
+
+  @UI.lineItem: [{ position: 39, label: 'Sold To Name1' }]
+  @UI.identification: [{ position: 39 }]
+  sold_to_name1;
+
+  @UI.lineItem: [{ position: 40, label: 'Sold To Name2' }]
+  @UI.identification: [{ position: 40 }]
+  sold_to_name2;
+
+  @UI.lineItem: [{ position: 41, label: 'Sold To GSTIN' }]
+  @UI.identification: [{ position: 41 }]
+  sold_to_gstin;
+
+  @UI.lineItem: [{ position: 42, label: 'Sold To Location' }]
+  @UI.identification: [{ position: 42 }]
+  sold_to_location;
+
+  @UI.lineItem: [{ position: 43, label: 'Place of Supply' }]
+  @UI.identification: [{ position: 43 }]
+  plc_sup;
+
+  @UI.lineItem: [{ position: 44, label: 'HSN' }]
+  @UI.identification: [{ position: 44 }]
+  hsn_num;
+
+  @UI.lineItem: [{ position: 45, label: 'Material' }]
+  @UI.identification: [{ position: 45 }]
+  material_no;
+
+  @UI.lineItem: [{ position: 46, label: 'Material Description' }]
+  @UI.identification: [{ position: 46 }]
+  arktx;
+
+  @UI.lineItem: [{ position: 47, label: 'Division' }]
+  @UI.identification: [{ position: 47 }]
+  division;
+
+  @UI.lineItem: [{ position: 48, label: 'Sales Unit' }]
+  @UI.identification: [{ position: 48 }]
+  sales_unit;
+
+  @UI.lineItem: [{ position: 49, label: 'Billed Quantity' }]
+  @UI.identification: [{ position: 49 }]
+  billed_quantity;
+
+  @UI.lineItem: [{ position: 50, label: 'Amount in Local Currency' }]
+  @UI.identification: [{ position: 50 }]
+  local_currency_amount;
+
+  @UI.lineItem: [{ position: 51, label: 'Local Currency' }]
+  @UI.identification: [{ position: 51 }]
+  hwaer;
+
+  @UI.lineItem: [{ position: 52, label: 'Amount in Document Currency' }]
+  @UI.identification: [{ position: 52 }]
+  document_currency_amount;
+
+  @UI.lineItem: [{ position: 53, label: 'Document Currency' }]
+  @UI.identification: [{ position: 53 }]
+  waers;
+
+  @UI.lineItem: [{ position: 54, label: 'Sur/Dis' }]
+  @UI.identification: [{ position: 54 }]
+  surcharge_discount;
+
+  @UI.lineItem: [{ position: 55, label: 'Freight' }]
+  @UI.identification: [{ position: 55 }]
+  freight_amount;
+
+  @UI.lineItem: [{ position: 56, label: 'Package' }]
+  @UI.identification: [{ position: 56 }]
+  packing_amount;
+
+  @UI.lineItem: [{ position: 57, label: 'MSR' }]
+  @UI.identification: [{ position: 57 }]
+  mat_surcharge;
+
+  @UI.lineItem: [{ position: 58, label: 'OSR' }]
+  @UI.identification: [{ position: 58 }]
+  min_sales_order_sur;
+
+  @UI.lineItem: [{ position: 59, label: 'PRD' }]
+  @UI.identification: [{ position: 59 }]
+  project_disc;
+
+  @UI.lineItem: [{ position: 60, label: 'IGST' }]
+  @UI.identification: [{ position: 60 }]
+  igst_amount;
+
+  @UI.lineItem: [{ position: 61, label: 'IGST Rate' }]
+  @UI.identification: [{ position: 61 }]
+  igst_rate;
+
+  @UI.lineItem: [{ position: 62, label: 'CGST Amount' }]
+  @UI.identification: [{ position: 62 }]
+  cgst_amount;
+
+  @UI.lineItem: [{ position: 63, label: 'CGST Rate' }]
+  @UI.identification: [{ position: 63 }]
+  cgst_rate;
+
+  @UI.lineItem: [{ position: 64, label: 'SGST Amount' }]
+  @UI.identification: [{ position: 64 }]
+  sgst_amount;
+
+  @UI.lineItem: [{ position: 65, label: 'SGST Rate' }]
+  @UI.identification: [{ position: 65 }]
+  sgst_rate;
+
+  @UI.lineItem: [{ position: 66, label: 'TCS Base' }]
+  @UI.identification: [{ position: 66 }]
+  tcs_base;
+
+  @UI.lineItem: [{ position: 67, label: 'TCS Percentage' }]
+  @UI.identification: [{ position: 67 }]
+  tcs_rate;
+
+  @UI.lineItem: [{ position: 68, label: 'TCS Amount' }]
+  @UI.identification: [{ position: 68 }]
+  tcs;
+
+  @UI.lineItem: [{ position: 69, label: 'TCS Scrap' }]
+  @UI.identification: [{ position: 69 }]
+  tcs_scrap;
+
+  @UI.lineItem: [{ position: 70, label: 'Unit Price' }]
+  @UI.identification: [{ position: 70 }]
+  unit_price;
+
+  @UI.lineItem: [{ position: 71, label: 'Taxable Value' }]
+  @UI.identification: [{ position: 71 }]
+  taxable_value;
+
+  @UI.lineItem: [{ position: 72, label: 'Gross Amount' }]
+  @UI.identification: [{ position: 72 }]
+  gross_amount;
+
+  @UI.lineItem: [{ position: 73, label: 'Incoterms' }]
+  @UI.identification: [{ position: 73 }]
+  incoterms;
+
+  @UI.lineItem: [{ position: 74, label: 'GL Account No.' }]
+  @UI.identification: [{ position: 74 }]
+  hkont_num;
+
+  @UI.lineItem: [{ position: 75, label: 'GL Description' }]
+  @UI.identification: [{ position: 75 }]
+  hkont_desc;
+
+  @UI.lineItem: [{ position: 76, label: 'Sales Group Name' }]
+  @UI.identification: [{ position: 76 }]
+  sales_group_name;
+
+  @UI.lineItem: [{ position: 77, label: 'Customer Product Code (PO)' }]
+  @UI.identification: [{ position: 77 }]
+  customer_product_code;
+
+  @UI.lineItem: [{ position: 78, label: 'Payment Terms' }]
+  @UI.identification: [{ position: 78 }]
+  payment_term;
+
+
+}
