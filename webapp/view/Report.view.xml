@@ -1,0 +1,96 @@
+<mvc:View controllerName="salesreport.controller.Report"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+
+    <content>
+    
+   <Table
+    id="salesTable"
+    items="{/z_cds_def_sales_register}"
+    growing="true"
+    growingThreshold="20">
+
+    <columns>
+
+        <Column id="colBillingDocument">
+            <Text
+                id="txtHdrBillingDocument"
+                text="Billing Document"/>
+        </Column>
+
+        <Column id="colBillingItem">
+            <Text
+                id="txtHdrBillingItem"
+                text="Billing Item"/>
+        </Column>
+
+        <Column id="colBillingDate">
+            <Text
+                id="txtHdrBillingDate"
+                text="Billing Date"/>
+        </Column>
+
+        <Column id="colCustomer">
+            <Text
+                id="txtHdrCustomer"
+                text="Customer"/>
+        </Column>
+
+        <Column id="colMaterial">
+            <Text
+                id="txtHdrMaterial"
+                text="Material"/>
+        </Column>
+
+        <Column id="colGrossAmount">
+            <Text
+                id="txtHdrGrossAmount"
+                text="Gross Amount"/>
+        </Column>
+
+    </columns>
+
+    <items>
+
+        <ColumnListItem id="salesTableRow">
+
+            <cells>
+
+                <Text
+                    id="cellBillingDocument"
+                    text="{billing_document}"/>
+
+                <Text
+                    id="cellBillingItem"
+                    text="{billing_item}"/>
+
+                <Text
+                    id="cellBillingDate"
+                    text="{path: 'billing_date', type: 'sap.ui.model.type.Date'}"/>
+
+                <Text
+                    id="cellCustomer"
+                    text="{bill_to_name1}"/>
+
+                <Text
+                    id="cellMaterial"
+                    text="{material_no}"/>
+
+                <ObjectNumber
+                    id="cellGrossAmount"
+                    number="{gross_amount}"
+                    unit="{waers}"/>
+
+            </cells>
+
+        </ColumnListItem>
+
+    </items>
+
+</Table>
+
+
+</content>
+    </Page>
+</mvc:View>

@@ -1,0 +1,64 @@
+<mvc:View controllerName="salesreport.controller.SelectionScreen"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    
+>
+
+   <Page id="page1" title="Sales Report" >
+    <content>
+       <!-- Selection Criteria -->
+       <Panel id="selectionPanel" headerText="Selection Criteria" class="sapUiSmallMargin"  width="100%">
+
+       <f:SimpleForm id='form1' editable="true" layout="ResponsiveGridLayout">
+        <!-- Company Code -->
+            <Label id='cocd'  text="Company Code" required="true"/> 
+            <Input id="bukrs" width="250px" showValueHelp="true"/>
+
+        <!-- Billing Date -->
+            <Label id='billdate' text="Billing Date" required="true"/>
+            <HBox id="Date">
+            <DatePicker id="erdatFrom"  width="150px"/>
+            <Text id ="to" text="to" class="sapUiTinyMarginBegin sapUiTinyMarginEnd"/>
+            <DatePicker id="erdatTo"  width="150px"/>
+            </HBox>  <!--Horizontal Alignment-->           
+
+        <!-- Billing Doc No -->
+            <Label id='billdno' text="Billing Document No"/>
+            <MultiInput id="vbeln" width="250px" 
+            showValueHelp="true"
+            valueHelpRequest=".onBillingDocumentValueHelp" />
+
+        <!-- Sales Office -->
+            <Label id='salesoff' text="Sales Office"/>
+            <MultiInput id="vkbur" width="250px" showValueHelp="true"/>
+
+        <!-- Business Place -->
+            <Label id='bplace' text="Business Place"/>
+            <MultiInput id="bupla" width="250px" showValueHelp="true" submit = ".onPOSubmit"/>
+
+            </f:SimpleForm>
+        </Panel>
+       
+        <Panel id="outputPanel" headerText="Output Format"  class="sapUiSmallMargin"  width="100%">
+       
+        <f:SimpleForm  id="outputForm" editable="true" layout="ResponsiveGridLayout">
+        <!-- Report Display -->
+
+         <Label id="text" text="Output"/>
+
+         <VBox id ="VerticalGroup">
+         <RadioButton id="reportDisplay" text="Report Display" selected="true" groupName="outputFormat"/>
+         <RadioButton id="fileDownload"  text="File Download"  groupName="outputFormat"/>
+        </VBox>
+
+        </f:SimpleForm>
+        </Panel>
+
+    <!-- Execute Button -->
+        <Button id = 'but1' text="Execute" type="Emphasized" press=".onExecute" class="sapUiSmallMargin"/>
+       
+        </content>
+    </Page>
+</mvc:View>
+

@@ -1,0 +1,139 @@
+{
+  "_version": "1.53.0",
+  "sap.app": {
+    "id": "salesreport",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.31.1",
+      "toolsId": "7a5cb446-de19-4ca4-b342-a1e33560cf85"
+    },
+    "dataSources": {
+      "ZSALES_REG_SERVICE_BIND_VAN": {
+        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZSALES_REG_SERVICE_BIND_VAN',Version='0001')/$value/",
+        "type": "ODataAnnotation",
+        "settings": {
+          "localUri": "localService/mainService/ZSALES_REG_SERVICE_BIND_VAN.xml"
+        }
+      },
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZSALES_REG_SERVICE_BIND/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "ZSALES_REG_SERVICE_BIND_VAN"
+          ],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.114.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "salesreport.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {}
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "salesreport.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "RouteSelectionScreen",
+          "pattern": "", 
+          "target": [
+            "TargetSelectionScreen"
+          ]
+        },
+         {
+          "name": "RouteReport",
+          "pattern": "Report", 
+          "target": [
+            "TargetReport"
+          ]
+        }
+      ],
+      "targets": {
+        "TargetSelectionScreen": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "SelectionScreen",
+          "viewName": "SelectionScreen"
+        },
+        "TargetReport": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Report",
+          "viewName": "Report"
+        }
+
+      }
+    },
+    "rootView": {
+      "viewName": "salesreport.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    }
+  }
+}
