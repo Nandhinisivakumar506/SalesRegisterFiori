@@ -34,6 +34,11 @@ An SAP Fiori application.
     npm run start-mock
 ```
 
+To Update Use below code in BAS
+git add .
+git commit -m "Updated Fiori application"
+git push
+
 #### Pre-requisites:
 
 1. Active NodeJS LTS (Long Term Support) version and associated supported NPM version.  (See https://nodejs.org)
