@@ -1,0 +1,237 @@
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Sales Register'
+@Metadata.ignorePropagatedAnnotations: true
+@OData.publish: true
+@Metadata.allowExtensions: true
+define root view entity z_cds_def_sales_register
+  as select from zfi_doctype       as a
+    inner join   z_cds_def_billing as b on  a.bukrs = b.company_code
+                                        and a.rtype = 'GSTR1'
+                                        and a.dtype = b.billing_type
+
+  /*
+    association to z_cds_def_accounting as acc   on  b.billing_document =  acc.awkey
+                                                 and acc.koart          <> 'D'
+    association to z_cds_def_accounting as acc_d on  b.billing_document = acc_d.awkey
+                                                 and acc_d.koart        = 'D'
+    association to z_cds_def_accounting as acc_1 on  b.billing_document =  acc_1.awkey
+                                                 and b.material_no      =  acc_1.matnr
+                                                 and acc_1.koart        <> 'D'
+
+   Replacing above code using max function                                              */
+
+  association to z_cds_def_accounting as acc on b.billing_document = acc.awkey
+
+{
+  key b.billing_document,
+  key b.billing_item,
+      b.business_gstin,
+      b.plant,
+      b.business_place,
+      b.vkbur                                                                       as sales_office,
+      b.bzirk                                                                       as sales_district,
+      b.xblnr                                                                       as invoice_number,
+      b.billing_type,
+      b.billing_date,
+      b.order_no,
+      b.order_item,
+      b.auart                                                                       as order_type,
+      b.audat                                                                       as document_date,
+      b.delivery_no,
+      b.bstnk                                                                       as po_num,
+      b.bstdk                                                                       as po_date,
+      b.bill_to_cust,
+      b.bill_to_gstin,
+      b.bill_to_pan,
+      b.bill_to_name1,
+      b.bill_to_name2,
+      b.bill_to_street,
+      b.bill_to_suppl3,
+      b.bill_to_country,
+      b.bill_to_city1,
+      b.bill_to_region,
+      b.bill_to_post_code,
+      b.ship_to_cust,
+      b.ship_to_gstin,
+      b.ship_to_name1,
+      b.ship_to_name2,
+      b.ship_to_street,
+      b.ship_to_suppl3,
+      b.ship_to_city1,
+      b.ship_to_region,
+      b.ship_to_post_code,
+      b.sold_to_cust,
+      b.sold_to_name1,
+      b.sold_to_name2,
+      b.sold_to_gstin,
+      b.sold_to_location,
+      /* acc_d.plc_sup,  */
+      max( case acc.koart         when 'D' then acc.plc_sup        end )            as plc_sup,
+      /* case
+          when acc_1.matnr is initial then acc.hsn_sac
+          else acc_1.hsn_sac
+        end as hsn_num,
+        Replacing above code using coalesce function*/
+      coalesce( max( case when acc.matnr = b.material_no and acc.koart <> 'D' then acc.hsn_sac
+                  end  ) , max( case when acc.koart <> 'D' then acc.hsn_sac end ) ) as hsn_num,
+
+      b.material_no,
+      b.arktx,
+      b.spart                                                                       as division,
+      b.vrkme                                                                       as sales_unit,
+
+      @Semantics.quantity.unitOfMeasure: 'sales_unit'
+      b.fklmg                                                                       as billed_quantity,
+
+    /*  @Semantics.amount.currencyCode: 'hwaer'
+      b.local_currency_amount,
+*/
+      acc.hwaer,
+      @Semantics.amount.currencyCode: 'waers'
+      b.document_currency_amount,
+      acc.waers,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.surcharge_discount,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.freight_amount,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.packing_amount,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.mat_surcharge,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.min_sales_order_sur,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.project_disc,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.igst_amount,
+      b.igst_rate,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.cgst_amount,
+      b.cgst_rate,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.sgst_amount,
+      b.sgst_rate,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.tcs_base,
+      b.tcs_rate,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.tcs,
+      @Semantics.amount.currencyCode: 'hwaer'
+      b.tcs_scrap,
+            @Semantics.amount.currencyCode: 'hwaer'
+      b.local_currency_amount,
+      
+      /*     cast( cast(b.local_currency_amount as abap.dec(15,2)) / b.fklmg  as abap.dec(13,3)  ) as unit_price,
+      simplified above statement */
+      cast( b.local_currency_amount / b.fklmg  as abap.dec(13,3))                   as unit_price,
+      @Semantics.amount.currencyCode: 'hwaer'
+      ( b.local_currency_amount + b.surcharge_discount )                            as taxable_value,
+      @Semantics.amount.currencyCode: 'hwaer'
+     cast( ( coalesce(b.local_currency_amount,0) + coalesce(b.surcharge_discount,0) + 
+      coalesce(b.freight_amount,0) + coalesce(b.packing_amount,0) + coalesce(b.mat_surcharge,0) +
+      coalesce(b.min_sales_order_sur,0) + coalesce(b.project_disc,0) + coalesce(b.igst_amount,0) + 
+      coalesce(b.cgst_amount,0) + coalesce(b.sgst_amount,0) + coalesce(b.tcs,0) +
+      coalesce(b.tcs_scrap,0)  )  as abap.dec(15,2)) as gross_amount,
+
+      b.incoterms,
+
+      /*
+        case
+          when acc_1.matnr is initial then acc.hkont
+          else acc_1.hkont
+        end as hkont_num,
+
+        case
+          when acc_1.matnr is initial then acc.txt50
+          else acc_1.txt50
+        end as hkont_desc,
+      replacing above code using coalesce function
+       coalesce( acc.hkont, acc_1.hkont )                                 as hkont_num,
+             coalesce( acc.txt50, acc_1.txt50 )                                 as hkont_desc, */
+      coalesce( max( case when acc.matnr = b.material_no and acc.koart <> 'D' then acc.hkont end ),
+           max( case  when acc.koart <> 'D' then acc.hkont end  ) )                 as hkont_num,
+
+      coalesce( max( case when acc.matnr = b.material_no and acc.koart <> 'D' then acc.txt50 end ),
+                  max( case when acc.koart <> 'D' then acc.txt50 end  ) )           as hkont_desc,
+      b.bezei                                                                       as sales_group_name,
+      b.kdmat                                                                       as customer_product_code,
+      b.zterm                                                                       as payment_term
+
+}
+
+group by
+  b.billing_document,
+  b.billing_item,
+  b.business_gstin,
+  b.plant,
+  b.business_place,
+  b.vkbur,
+  b.bzirk,
+  b.xblnr,
+  b.billing_type,
+  b.billing_date,
+  b.order_no,
+  b.order_item,
+  b.auart,
+  b.audat,
+  b.delivery_no,
+  b.bstnk,
+  b.bstdk,
+  b.bill_to_cust,
+  b.bill_to_gstin,
+  b.bill_to_pan,
+  b.bill_to_name1,
+  b.bill_to_name2,
+  b.bill_to_street,
+  b.bill_to_suppl3,
+  b.bill_to_country,
+  b.bill_to_city1,
+  b.bill_to_region,
+  b.bill_to_post_code,
+  b.ship_to_cust,
+  b.ship_to_gstin,
+  b.ship_to_name1,
+  b.ship_to_name2,
+  b.ship_to_street,
+  b.ship_to_suppl3,
+  b.ship_to_city1,
+  b.ship_to_region,
+  b.ship_to_post_code,
+  b.sold_to_cust,
+  b.sold_to_name1,
+  b.sold_to_name2,
+  b.sold_to_gstin,
+  b.sold_to_location,
+  b.material_no,
+  b.arktx,
+  b.spart,
+  b.vrkme,
+  b.fklmg,
+  b.local_currency_amount,
+  acc.hwaer,
+  b.document_currency_amount,
+  acc.waers,
+  b.surcharge_discount,
+  b.freight_amount,
+  b.packing_amount,
+  b.mat_surcharge,
+  b.min_sales_order_sur,
+  b.project_disc,
+  b.igst_amount,
+  b.igst_rate,
+  b.cgst_amount,
+  b.cgst_rate,
+  b.sgst_amount,
+  b.sgst_rate,
+  b.tcs_base,
+  b.tcs_rate,
+  b.tcs,
+  b.tcs_scrap,
+  b.incoterms,
+  b.bezei,
+  b.kdmat,
+  b.zterm
+
+
+
+
