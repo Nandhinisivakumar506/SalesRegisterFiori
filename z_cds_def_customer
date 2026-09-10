@@ -1,0 +1,35 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'CDS entity for customer master details'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+
+define view entity z_cds_def_customer as select from vbpa
+  association [1..1] to adrc on vbpa.adrnr = adrc.addrnumber
+  association [1..1] to kna1 on vbpa.kunnr = kna1.kunnr
+  association [1..1] to j_1imocust on vbpa.kunnr = j_1imocust.kunnr
+{
+  key vbpa.vbeln,
+  key vbpa.parvw,
+      vbpa.kunnr,
+      kna1.stcd3,
+      kna1.ort01,
+      adrc.name1,
+      adrc.name2,
+      adrc.str_suppl3,
+      adrc.region,
+      adrc.street,
+      adrc.city1,
+      adrc.country,
+      adrc.post_code1,
+      j_1imocust.j_1ipanno
+}
+where
+     vbpa.parvw = 'RE' 
+  or vbpa.parvw = 'WE'
+  or vbpa.parvw = 'AG'
+
