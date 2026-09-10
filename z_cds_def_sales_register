@@ -3,6 +3,7 @@
 @Metadata.ignorePropagatedAnnotations: true
 @OData.publish: true
 @Metadata.allowExtensions: true
+/*+[hideWarning] { "IDS" : [ "CARDINALITY_CHECK" ]  } */
 define root view entity z_cds_def_sales_register
   as select from zfi_doctype       as a
     inner join   z_cds_def_billing as b on  a.bukrs = b.company_code
@@ -19,7 +20,6 @@ define root view entity z_cds_def_sales_register
                                                  and acc_1.koart        <> 'D'
 
    Replacing above code using max function                                              */
-
   association to z_cds_def_accounting as acc on b.billing_document = acc.awkey
 
 {
@@ -29,7 +29,7 @@ define root view entity z_cds_def_sales_register
       b.plant,
       b.business_place,
       b.vkbur                                                                       as sales_office,
-      b.bzirk                                                                       as sales_district,
+      b.bzirk                                                                       as sales_district,   
       b.xblnr                                                                       as invoice_number,
       b.billing_type,
       b.billing_date,
@@ -83,9 +83,9 @@ define root view entity z_cds_def_sales_register
       @Semantics.quantity.unitOfMeasure: 'sales_unit'
       b.fklmg                                                                       as billed_quantity,
 
-    /*  @Semantics.amount.currencyCode: 'hwaer'
-      b.local_currency_amount,
-*/
+      /*  @Semantics.amount.currencyCode: 'hwaer'
+        b.local_currency_amount,
+  */
       acc.hwaer,
       @Semantics.amount.currencyCode: 'waers'
       b.document_currency_amount,
@@ -118,23 +118,24 @@ define root view entity z_cds_def_sales_register
       b.tcs,
       @Semantics.amount.currencyCode: 'hwaer'
       b.tcs_scrap,
-            @Semantics.amount.currencyCode: 'hwaer'
+      @Semantics.amount.currencyCode: 'hwaer'
       b.local_currency_amount,
-      
+
       /*     cast( cast(b.local_currency_amount as abap.dec(15,2)) / b.fklmg  as abap.dec(13,3)  ) as unit_price,
       simplified above statement */
       cast( b.local_currency_amount / b.fklmg  as abap.dec(13,3))                   as unit_price,
       @Semantics.amount.currencyCode: 'hwaer'
       ( b.local_currency_amount + b.surcharge_discount )                            as taxable_value,
       @Semantics.amount.currencyCode: 'hwaer'
-     cast( ( coalesce(b.local_currency_amount,0) + coalesce(b.surcharge_discount,0) + 
-      coalesce(b.freight_amount,0) + coalesce(b.packing_amount,0) + coalesce(b.mat_surcharge,0) +
-      coalesce(b.min_sales_order_sur,0) + coalesce(b.project_disc,0) + coalesce(b.igst_amount,0) + 
-      coalesce(b.cgst_amount,0) + coalesce(b.sgst_amount,0) + coalesce(b.tcs,0) +
-      coalesce(b.tcs_scrap,0)  )  as abap.dec(15,2)) as gross_amount,
-
+      cast( ( coalesce(b.local_currency_amount,0) + coalesce(b.surcharge_discount,0) +
+       coalesce(b.freight_amount,0) + coalesce(b.packing_amount,0) + coalesce(b.mat_surcharge,0) +
+       coalesce(b.min_sales_order_sur,0) + coalesce(b.project_disc,0) + coalesce(b.igst_amount,0) +
+       coalesce(b.cgst_amount,0) + coalesce(b.sgst_amount,0) + coalesce(b.tcs,0) +
+       coalesce(b.tcs_scrap,0)  )  as abap.dec(15,2))                               as gross_amount,
       b.incoterms,
-
+      @ObjectModel.virtualElement: true
+      @ObjectModel.virtualElementCalculatedBy: 'ABAP:ZCL_SALES_REG_VE'
+      cast( '' as abap.char(1000) )                                                 as gross_amount_words,
       /*
         case
           when acc_1.matnr is initial then acc.hkont
@@ -155,7 +156,8 @@ define root view entity z_cds_def_sales_register
                   max( case when acc.koart <> 'D' then acc.txt50 end  ) )           as hkont_desc,
       b.bezei                                                                       as sales_group_name,
       b.kdmat                                                                       as customer_product_code,
-      b.zterm                                                                       as payment_term
+      b.zterm                                                                       as payment_term,
+      a.bukrs                                                                       as Company_Code
 
 }
 
@@ -230,8 +232,5 @@ group by
   b.incoterms,
   b.bezei,
   b.kdmat,
-  b.zterm
-
-
-
-
+  b.zterm,
+  a.bukrs
