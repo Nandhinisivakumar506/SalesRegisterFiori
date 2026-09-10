@@ -2,31 +2,93 @@
 
 @UI: {
   headerInfo: {
-    typeName: 'Sales Register',
-    typeNamePlural: 'Sales Registers',
+    typeNamePlural: 'Sales Register',
     title: {
       type: #STANDARD,
-      value: 'billing_document'
-    }
-  }
-} 
+    value: 'billing_document'},
+    description: {
+    value: 'billing_item'
+}
+  } }
+
+@UI.presentationVariant: [{
+       sortOrder: [{
+           by: 'billing_document',
+           direction: #DESC
+       }]
+   }]
+
 
 annotate view z_cds_def_sales_register with
 {
+
+ @UI.facet: [
+    {
+      purpose: #STANDARD,
+      type: #IDENTIFICATION_REFERENCE,
+      position: 10},
+
+    {purpose: #HEADER,
+      position: 1,
+      type: #DATAPOINT_REFERENCE,
+      targetQualifier: 'header_data1'
+  },
+  {purpose: #HEADER,
+      position: 2,
+      type: #DATAPOINT_REFERENCE,
+      targetQualifier: 'header_data2'}, 
+      
+//Tab strip
+  {
+    id         : 'Orderdetails',
+    label      : 'Order Details',
+    type       : #COLLECTION,
+    position: 10 
+  },
+    {
+    id       : 'OrderDetailsIdentification',
+    parentId : 'Orderdetails',
+    //type     : #IDENTIFICATION_REFERENCE,
+    type            : #FIELDGROUP_REFERENCE,
+    targetQualifier : 'Order_Details',
+    position : 10
+  },
+    {
+    id         : 'Itemdetails',
+    label      : 'Item Details',
+    type       : #COLLECTION,
+    position: 20
+  },
+    {
+    id       : 'ItemDetailsIdentification',
+    parentId : 'Itemdetails',
+    //type     : #IDENTIFICATION_REFERENCE,
+    type            : #FIELDGROUP_REFERENCE,
+    targetQualifier : 'Item_Details',
+    position : 20
+  }   
+  ]
+    
+    
+  //UI.selectionField - Filter (similar to selection screen)
+  //UI.lineItem - column will be displayed in list report page
+  //UI.identification - column will be displayed in object page
+
   @UI.lineItem: [{ position: 1 }]
   @UI.identification: [{ position: 1 }]
   @UI.selectionField: [ { position: 1 } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: 'Z_CDS_F4_BILLINGNO', element: 'billing_document' } }]  
-  @Consumption.filter.selectionType: #INTERVAL
+  @Consumption.valueHelpDefinition: [{ entity: { name: 'Z_CDS_F4_BILLINGNO', element: 'billing_document' } }]
   @Consumption.filter.multipleSelections: true
   billing_document;
 
-  @UI.lineItem: [{ position: 2, label: 'Billing Item' }]
-  @UI.identification: [{ position: 2 }]
+  //@UI.lineItem: [{ position: 2, label: 'Billing Item' }]
+  //@UI.identification: [{ position: 2 }]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'Order_Details', label: 'Billing Item' }]
   billing_item;
 
-  @UI.lineItem: [{ position: 3, label: 'Supplier GSTIN' }]
-  @UI.identification: [{ position: 3 }]
+  //@UI.lineItem: [{ position: 3, label: 'Supplier GSTIN' }]
+  //@UI.identification: [{ position: 3 }]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'Item_Details', label: 'Supplier GSTIN' }]
   business_gstin;
 
   @UI.lineItem: [{ position: 4 }]
@@ -35,13 +97,15 @@ annotate view z_cds_def_sales_register with
 
   @UI.lineItem: [{ position: 5 }]
   @UI.identification: [{ position: 5 }]
-  @UI.selectionField: [ { position: 2 } ]
-  @Consumption.filter.multipleSelections: true
+  @UI.selectionField: [ { position: 3.1 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: 'Z_CDS_F4_BUPLA', element: 'branch' } }]
+  @Consumption.valueHelpDefinition: [ {  additionalBinding: [{ element: 'bukrs' , localElement: 'Company_Code' } ] } ]
+  //element:The field in the value help entity used for filtering.
+  //localElement: The field in the current view that is used as the filtering key.
   business_place;
 
   @UI.lineItem: [{ position: 6 }]
   @UI.identification: [{ position: 6 }]
-  @UI.selectionField: [ { position: 3 } ]
   sales_office;
 
   @UI.lineItem: [{ position: 7 }]
@@ -59,9 +123,6 @@ annotate view z_cds_def_sales_register with
   @UI.lineItem: [{ position: 10 }]
   @UI.identification: [{ position: 10 }]
   @UI.selectionField: [ { position: 4 } ]
-  @Consumption.filter.mandatory: true
-  @Consumption.filter.selectionType: #INTERVAL
-  @Consumption.filter.multipleSelections: true
   billing_date;
 
   @UI.lineItem: [{ position: 11 }]
@@ -308,9 +369,19 @@ annotate view z_cds_def_sales_register with
   @UI.identification: [{ position: 71 }]
   taxable_value;
 
-  @UI.lineItem: [{ position: 72, label: 'Gross Amount' }]
-  @UI.identification: [{ position: 72 }]
+
+  //value is displayed in header level
+  @UI.dataPoint: {
+      qualifier: 'header_data1',
+      title: 'Gross Amount'
+  }
   gross_amount;
+
+  @UI.dataPoint: {
+      qualifier: 'header_data2',
+      title: 'Gross Amount Words'
+  }
+  gross_amount_words;
 
   @UI.lineItem: [{ position: 73, label: 'Incoterms' }]
   @UI.identification: [{ position: 73 }]
@@ -336,5 +407,9 @@ annotate view z_cds_def_sales_register with
   @UI.identification: [{ position: 78 }]
   payment_term;
 
-
+  @UI.lineItem: [{ position: 79, label: 'Company Code' }]
+  @UI.identification: [{ position: 79 }]
+  @UI.selectionField: [ { position: 5 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: 'Z_CDS_F4_COMPANYCODE', element: 'Company_Code' } }]
+  Company_Code; 
 }
