@@ -1,0 +1,52 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'CDS entity for condition record'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity z_cds_def_tax as select from prcd_elements
+{
+  key knumv,
+  key kposn,
+  //@Semantics.currencyCode:true  
+      cast ('INR' as abap.cuky) as Curr_Code,      
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'JOSG' then kwert end ) as sgst_amount,
+       //case    when kschl = 'JOSG' then kwert end as sgst_amount,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'JOSG' then kwert end ) as cgst_amount,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'JOIG' then kwert end ) as igst_amount,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'JTCB' then kwert end ) as tcs_base,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'JTC1' then kwert end ) as tcs,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'JTC2' then kwert end ) as tcs_scrap,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'SD' then kwert end )   as surcharge_discount,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'FRE' then kwert end )  as freight,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'PACK' then kwert end ) as packing,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'MAT' then kwert end )  as mat_surcharge,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'MSO' then kwert end )  as min_sales_order_sur,
+      @Semantics.amount.currencyCode: 'Curr_Code'
+      max ( case    when kschl = 'PD' then kwert end )   as project_disc,
+
+      max ( case    when kschl = 'JOSG' then kbetr end ) as sgst_rate,
+      max ( case    when kschl = 'JOSG' then kbetr end ) as cgst_rate,
+      max ( case    when kschl = 'JOIG' then kbetr end ) as igst_rate,
+      max ( case    when kschl = 'JTC1' then kbetr end ) as tcs_rate
+
+}
+//where kschl ='JOCG' or  kschl = 'JOSG' or kschl = 'JOIG'
+group by
+knumv,
+kposn;
+
