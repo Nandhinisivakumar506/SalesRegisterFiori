@@ -2,13 +2,15 @@
 
 @UI: {
   headerInfo: {
-    typeNamePlural: 'Sales Register',
+    typeNamePlural: 'Sales Registers',
+    typeName: 'Sales Register',    
     title: {
       type: #STANDARD,
     value: 'billing_document'},
     description: {
-    value: 'billing_item'
-}
+    value: 'billing_item'   
+},
+ typeImageUrl : 'sap-icon://expense-report'
   } }
 
 @UI.presentationVariant: [{
@@ -21,19 +23,21 @@
 
 annotate view z_cds_def_sales_register with
 {
-
+//Object Page
  @UI.facet: [
     {
       purpose: #STANDARD,
       type: #IDENTIFICATION_REFERENCE,
-      position: 10},
-
-    {purpose: #HEADER,
+      position: 10 
+    },   
+  
+    { purpose: #HEADER,
       position: 1,
       type: #DATAPOINT_REFERENCE,
       targetQualifier: 'header_data1'
   },
-  {purpose: #HEADER,
+  
+    { purpose: #HEADER,
       position: 2,
       type: #DATAPOINT_REFERENCE,
       targetQualifier: 'header_data2'}, 
@@ -43,12 +47,11 @@ annotate view z_cds_def_sales_register with
     id         : 'Orderdetails',
     label      : 'Order Details',
     type       : #COLLECTION,
-    position: 10 
+    position   : 10 
   },
     {
     id       : 'OrderDetailsIdentification',
     parentId : 'Orderdetails',
-    //type     : #IDENTIFICATION_REFERENCE,
     type            : #FIELDGROUP_REFERENCE,
     targetQualifier : 'Order_Details',
     position : 10
@@ -62,33 +65,68 @@ annotate view z_cds_def_sales_register with
     {
     id       : 'ItemDetailsIdentification',
     parentId : 'Itemdetails',
-    //type     : #IDENTIFICATION_REFERENCE,
     type            : #FIELDGROUP_REFERENCE,
     targetQualifier : 'Item_Details',
     position : 20
-  }   
+  },
+      {
+    id         : 'BillDetails',
+    label      : 'Billing Details',
+    type       : #COLLECTION,
+    position: 20
+  },
+   {
+    id       : 'BilletailsIdentification',
+    parentId : 'BillDetails',
+    type            : #FIELDGROUP_REFERENCE,
+    targetQualifier : 'Bill_Details',
+    position : 30
+  },
+  
+  {
+            id: 'Items',
+            label: 'Accounting Details',
+            purpose: #STANDARD,
+            type: #LINEITEM_REFERENCE,
+            targetElement: 'acc',
+            position: 40
+  },
+        
+    {
+    id         : 'Charts',
+    label      : 'ChartDetails',
+    type       : #COLLECTION,
+    position   : 30 
+  },
+  
+    {
+    id       : 'ChartIdentification',
+    parentId : 'Charts',
+    type            : #FIELDGROUP_REFERENCE,
+    targetQualifier : 'Chart_Details',
+    position : 10
+   }
   ]
     
     
   //UI.selectionField - Filter (similar to selection screen)
   //UI.lineItem - column will be displayed in list report page
   //UI.identification - column will be displayed in object page
+  //UI.fieldGroup - column visible in object page under a collection 
+  //UI.dataPoint -  value is displayed in header level
 
-  @UI.lineItem: [{ position: 1 }]
+  @UI.lineItem: [{ position: 1.1 }]
   @UI.identification: [{ position: 1 }]
-  @UI.selectionField: [ { position: 1 } ]
+  @UI.selectionField: [ { position: 1.1 } ]
   @Consumption.valueHelpDefinition: [{ entity: { name: 'Z_CDS_F4_BILLINGNO', element: 'billing_document' } }]
   @Consumption.filter.multipleSelections: true
   billing_document;
 
-  //@UI.lineItem: [{ position: 2, label: 'Billing Item' }]
-  //@UI.identification: [{ position: 2 }]
-  @UI.fieldGroup: [{ position: 10, qualifier: 'Order_Details', label: 'Billing Item' }]
+  @UI.lineItem: [{ position: 2, label: 'Billing Item' }]
   billing_item;
 
-  //@UI.lineItem: [{ position: 3, label: 'Supplier GSTIN' }]
-  //@UI.identification: [{ position: 3 }]
-  @UI.fieldGroup: [{ position: 10, qualifier: 'Item_Details', label: 'Supplier GSTIN' }]
+   @UI.lineItem: [{ position: 3, label: 'Supplier GSTIN' }]
+
   business_gstin;
 
   @UI.lineItem: [{ position: 4 }]
@@ -100,6 +138,7 @@ annotate view z_cds_def_sales_register with
   @UI.selectionField: [ { position: 3.1 } ]
   @Consumption.valueHelpDefinition: [{ entity: { name: 'Z_CDS_F4_BUPLA', element: 'branch' } }]
   @Consumption.valueHelpDefinition: [ {  additionalBinding: [{ element: 'bukrs' , localElement: 'Company_Code' } ] } ]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'Item_Details', label: 'Supplier GSTIN'}]
   //element:The field in the value help entity used for filtering.
   //localElement: The field in the current view that is used as the filtering key.
   business_place;
@@ -116,21 +155,22 @@ annotate view z_cds_def_sales_register with
   @UI.identification: [{ position: 8 }]
   invoice_number;
 
+  @UI.fieldGroup: [{ position: 10, qualifier: 'Bill_Details', label: 'Type'}]
   @UI.lineItem: [{ position: 9 }]
-  @UI.identification: [{ position: 9 }]
   billing_type;
-
+  
+  @UI.fieldGroup: [{ position: 20, qualifier: 'Bill_Details', label: 'Date'}]
   @UI.lineItem: [{ position: 10 }]
-  @UI.identification: [{ position: 10 }]
   @UI.selectionField: [ { position: 4 } ]
   billing_date;
 
   @UI.lineItem: [{ position: 11 }]
+    @UI.fieldGroup: [{ position: 20, qualifier: 'Order_Details', label: 'Order No' }]
   @UI.identification: [{ position: 11 }]
   order_no;
 
   @UI.lineItem: [{ position: 12 }]
-  @UI.identification: [{ position: 12 }]
+  @UI.fieldGroup: [{ position: 20, qualifier: 'Order_Details', label: 'Order Item' }]
   order_item;
 
   @UI.lineItem: [{ position: 13 }]
@@ -152,48 +192,59 @@ annotate view z_cds_def_sales_register with
   @UI.lineItem: [{ position: 17, label: 'Purchase Order Date' }]
   @UI.identification: [{ position: 17 }]
   po_date;
-
+  
+ @UI.fieldGroup: [{ position: 30, qualifier: 'Bill_Details', label: 'Customer'}]
   @UI.lineItem: [{ position: 18, label: 'Bill To Party' }]
   @UI.identification: [{ position: 18 }]
   bill_to_cust;
 
+ @UI.fieldGroup: [{ position: 40, qualifier: 'Bill_Details', label: 'GSTIN'}]
   @UI.lineItem: [{ position: 19, label: 'Bill To GSTIN' }]
   @UI.identification: [{ position: 19 }]
   bill_to_gstin;
 
+ @UI.fieldGroup: [{ position: 50, qualifier: 'Bill_Details', label: 'PAN'}]
   @UI.lineItem: [{ position: 20, label: 'Bill To PAN' }]
   @UI.identification: [{ position: 20 }]
   bill_to_pan;
 
+ @UI.fieldGroup: [{ position: 60, qualifier: 'Bill_Details', label: 'Name1'}]
   @UI.lineItem: [{ position: 21, label: 'Bill To Name1' }]
   @UI.identification: [{ position: 21 }]
   bill_to_name1;
 
+ @UI.fieldGroup: [{ position: 70, qualifier: 'Bill_Details', label: 'Name2'}]
   @UI.lineItem: [{ position: 22, label: 'Bill To Name2' }]
   @UI.identification: [{ position: 22 }]
   bill_to_name2;
 
   @UI.lineItem: [{ position: 23, label: 'Bill To Address1' }]
+   @UI.fieldGroup: [{ position: 80, qualifier: 'Bill_Details', label: 'Street'}]
   @UI.identification: [{ position: 23 }]
   bill_to_street;
 
   @UI.lineItem: [{ position: 24, label: 'Bill To Address2' }]
+   @UI.fieldGroup: [{ position: 90, qualifier: 'Bill_Details', label: 'Supplier'}]
   @UI.identification: [{ position: 24 }]
   bill_to_suppl3;
 
   @UI.lineItem: [{ position: 25, label: 'Bill To Country' }]
+   @UI.fieldGroup: [{ position: 100, qualifier: 'Bill_Details', label: 'Country'}]
   @UI.identification: [{ position: 25 }]
   bill_to_country;
 
   @UI.lineItem: [{ position: 26, label: 'Bill To City' }]
+   @UI.fieldGroup: [{ position: 110, qualifier: 'Bill_Details', label: 'City1'}]
   @UI.identification: [{ position: 26 }]
   bill_to_city1;
 
   @UI.lineItem: [{ position: 27, label: 'Bill To State' }]
+   @UI.fieldGroup: [{ position: 120, qualifier: 'Bill_Details', label: 'Region'}]
   @UI.identification: [{ position: 27 }]
   bill_to_region;
 
   @UI.lineItem: [{ position: 28, label: 'Bill To Pincode' }]
+  @UI.fieldGroup: [{ position: 130, qualifier: 'Bill_Details', label: 'PinCode'}]
   @UI.identification: [{ position: 28 }]
   bill_to_post_code;
 
@@ -271,7 +322,7 @@ annotate view z_cds_def_sales_register with
 
   @UI.lineItem: [{ position: 47, label: 'Division' }]
   @UI.identification: [{ position: 47 }]
-  division;
+  division; 
 
   @UI.lineItem: [{ position: 48, label: 'Sales Unit' }]
   @UI.identification: [{ position: 48 }]
@@ -298,19 +349,19 @@ annotate view z_cds_def_sales_register with
   waers;
 
   @UI.lineItem: [{ position: 54, label: 'Sur/Dis' }]
-  @UI.identification: [{ position: 54 }]
+
   surcharge_discount;
 
   @UI.lineItem: [{ position: 55, label: 'Freight' }]
-  @UI.identification: [{ position: 55 }]
+
   freight_amount;
 
   @UI.lineItem: [{ position: 56, label: 'Package' }]
-  @UI.identification: [{ position: 56 }]
+
   packing_amount;
 
   @UI.lineItem: [{ position: 57, label: 'MSR' }]
-  @UI.identification: [{ position: 57 }]
+  
   mat_surcharge;
 
   @UI.lineItem: [{ position: 58, label: 'OSR' }]
@@ -318,55 +369,52 @@ annotate view z_cds_def_sales_register with
   min_sales_order_sur;
 
   @UI.lineItem: [{ position: 59, label: 'PRD' }]
-  @UI.identification: [{ position: 59 }]
+
   project_disc;
 
   @UI.lineItem: [{ position: 60, label: 'IGST' }]
-  @UI.identification: [{ position: 60 }]
+
   igst_amount;
 
   @UI.lineItem: [{ position: 61, label: 'IGST Rate' }]
-  @UI.identification: [{ position: 61 }]
+
   igst_rate;
 
   @UI.lineItem: [{ position: 62, label: 'CGST Amount' }]
-  @UI.identification: [{ position: 62 }]
+ 
   cgst_amount;
 
   @UI.lineItem: [{ position: 63, label: 'CGST Rate' }]
-  @UI.identification: [{ position: 63 }]
+ 
   cgst_rate;
 
   @UI.lineItem: [{ position: 64, label: 'SGST Amount' }]
-  @UI.identification: [{ position: 64 }]
+
   sgst_amount;
 
   @UI.lineItem: [{ position: 65, label: 'SGST Rate' }]
-  @UI.identification: [{ position: 65 }]
+
   sgst_rate;
 
   @UI.lineItem: [{ position: 66, label: 'TCS Base' }]
-  @UI.identification: [{ position: 66 }]
+
   tcs_base;
 
   @UI.lineItem: [{ position: 67, label: 'TCS Percentage' }]
-  @UI.identification: [{ position: 67 }]
+
   tcs_rate;
 
   @UI.lineItem: [{ position: 68, label: 'TCS Amount' }]
-  @UI.identification: [{ position: 68 }]
+
   tcs;
 
   @UI.lineItem: [{ position: 69, label: 'TCS Scrap' }]
-  @UI.identification: [{ position: 69 }]
   tcs_scrap;
 
   @UI.lineItem: [{ position: 70, label: 'Unit Price' }]
-  @UI.identification: [{ position: 70 }]
   unit_price;
 
   @UI.lineItem: [{ position: 71, label: 'Taxable Value' }]
-  @UI.identification: [{ position: 71 }]
   taxable_value;
 
 
@@ -384,32 +432,28 @@ annotate view z_cds_def_sales_register with
   gross_amount_words;
 
   @UI.lineItem: [{ position: 73, label: 'Incoterms' }]
-  @UI.identification: [{ position: 73 }]
   incoterms;
 
   @UI.lineItem: [{ position: 74, label: 'GL Account No.' }]
-  @UI.identification: [{ position: 74 }]
   hkont_num;
 
   @UI.lineItem: [{ position: 75, label: 'GL Description' }]
-  @UI.identification: [{ position: 75 }]
   hkont_desc;
 
   @UI.lineItem: [{ position: 76, label: 'Sales Group Name' }]
-  @UI.identification: [{ position: 76 }]
   sales_group_name;
 
-  @UI.lineItem: [{ position: 77, label: 'Customer Product Code (PO)' }]
-  @UI.identification: [{ position: 77 }]
+  @UI.lineItem: [{ position: 77, label: 'Sales Group Name' }]
   customer_product_code;
 
   @UI.lineItem: [{ position: 78, label: 'Payment Terms' }]
   @UI.identification: [{ position: 78 }]
   payment_term;
 
-  @UI.lineItem: [{ position: 79, label: 'Company Code' }]
+  @UI.lineItem: [{ position: 2.1, label: 'Company Code' }]
   @UI.identification: [{ position: 79 }]
-  @UI.selectionField: [ { position: 5 } ]
+  @UI.selectionField: [ { position: 1 } ]
+  @Consumption.filter.mandatory: true
   @Consumption.valueHelpDefinition: [{ entity: { name: 'Z_CDS_F4_COMPANYCODE', element: 'Company_Code' } }]
   Company_Code; 
 }
