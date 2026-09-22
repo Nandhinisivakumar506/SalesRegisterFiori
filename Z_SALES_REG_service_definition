@@ -1,0 +1,7 @@
+@EndUserText.label: 'Service definition for sales register'
+define service Z_SALES_REG_service_definition {
+  expose z_cds_def_sales_register;
+  expose Z_CDS_F4_BUPLA;
+  expose z_cds_def_accounting;
+  expose Z_CDS_F4_CompanyCode;
+}
